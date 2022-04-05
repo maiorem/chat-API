@@ -1,2 +1,2 @@
 # springboot-messaging
-스프링부트와 STOMP로 메시징 시스템 만들기 예제
+스프링부트와 WebSocket으로 채팅시스템 만들기
