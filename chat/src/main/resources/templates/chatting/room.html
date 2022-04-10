@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/layout2">
+
+
+<div layout:fragment="content">
+
+    <style>
+
+        .container{
+            width: 500px;
+            margin: 0 auto;
+            padding: 25px
+        }
+        .container h1{
+            text-align: center;
+            padding: 5px 5px 5px 15px;
+            color: #0d0d0d;
+            margin-bottom: 20px;
+        }
+
+        .container h2{
+            margin:10px;
+        }
+        .roomContainer{
+            background-color: #F6F6F6;
+            width: 500px;
+            height: 500px;
+            overflow: unset;
+            border: solid;
+        }
+        .roomList{
+            border: none;
+        }
+        .roomList th{
+            border: 1px solid #383d41;
+            background-color: #fff;
+            color: #0d0d0d;
+        }
+        .roomList td{
+            border: 1px solid #383d41;
+            background-color: #fff;
+            text-align: left;
+            color: #0d0d0d;
+        }
+        .roomList .num{
+            width: 75px;
+            text-align: center;
+        }
+        .roomList .room{
+            width: 350px;
+        }
+        .roomList .go{
+            width: 71px;
+            text-align: center;
+        }
+        button{
+            background-color: #FFBB00;
+            font-size: 14px;
+            color: #000;
+            border: 1px solid #000;
+            border-radius: 5px;
+            padding: 3px;
+            margin: 3px;
+        }
+        .inputTable th{
+            padding: 5px;
+        }
+        .inputTable input{
+            width: 330px;
+            height: 25px;
+        }
+
+    </style>
+
+
+
+
+    <div class="container">
+        <h2><i class="fa fa-users" aria-hidden="true">CHATROOM</i></h2>
+        <div id="roomContainer" class="roomContainer">
+            <table id="roomList" class="roomList"></table>
+        </div>
+        <div>
+            <table class="inputTable">
+                <tr>
+                    <th>Room Title</th>
+                    <th><input type="text" name="roomName" id="roomName"></th>
+                    <th><i class="fa fa-reply-all" aria-hidden="true"></i></th>
+                    <th><button class="btn btn-dark btn-round" id="createRoom">GO!</button></th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<th:block  layout:fragment="script">
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script th:inline="javascript">
+        var ws;
+        window.onload = function(){
+            getRoom();
+            createRoom();
+        }
+
+        function getRoom(){
+            commonAjax('/chatting/getRoom', "", 'post', function(result){
+                createChatingRoom(result);
+            });
+        }
+
+        function createRoom(){
+            $("#createRoom").click(function(){
+                var msg = {	roomName : $('#roomName').val()	};
+
+                commonAjax('/chatting/createRoom', msg, 'post', function(result){
+                    createChatingRoom(result);
+                });
+
+                $("#roomName").val("");
+            });
+        }
+
+        function goRoom(number, name){
+            location.href="/chatting/chat?roomName="+name+"&"+"roomNumber="+number;
+
+        }
+
+        function createChatingRoom(res){
+            if(res != null){
+                var tag = "<tr><th class='num'>#</th><th class='room' style='text-align: center;'>ROOM NAME</th><th class='go'><i class=\"fa fa-share\" aria-hidden=\"true\"></i></th></tr>";
+                res.forEach(function(d, idx){
+                    var rn = d.roomName.trim();
+                    var roomNumber = d.roomNumber;
+                    tag += "<tr>"+
+                        "<td class='num' style='color: #0b1011'>"+(idx+1)+"</td>"+
+                        "<td class='room' style='text-align: center;color: #0b1011'>"+ rn +"</td>"+
+                        "<td class='go'><button  class=\"btn btn-dark btn-sm\" type='button' onclick='goRoom(\""+roomNumber+"\", \""+rn+"\")'>참여</button></td>" +
+                        "</tr>";
+                });
+                $("#roomList").empty().append(tag);
+            }
+        }
+
+        function commonAjax(url, parameter, type, calbak, contentType){
+            $.ajax({
+                url: url,
+                data: parameter,
+                type: type,
+                contentType : contentType!=null?contentType:'application/x-www-form-urlencoded; charset=UTF-8',
+                success: function (res) {
+                    calbak(res);
+                },
+                error : function(err){
+                    console.log('error');
+                    calbak(err);
+                }
+            });
+        }
+
+
+
+    </script>
+</th:block>
