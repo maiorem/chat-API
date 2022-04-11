@@ -66,6 +66,12 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.4'
+
+    //쿼리 파라미터 로그 외부 라이브러리
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
+
+    // validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 sourceSets {
