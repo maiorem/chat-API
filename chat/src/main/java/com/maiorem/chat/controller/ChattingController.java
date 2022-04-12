@@ -13,38 +13,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
-@Log4j2
 public class ChattingController {
 
-    List<ChatRoom> roomList = new ArrayList<>();
 
     private final ChatService chatService;
 
 
     @GetMapping("/chat")
-    public void chat(@RequestParam HashMap<Object, Object> params, Model model) {
-        int roomNumber = Integer.parseInt((String) params.get("roomNumber"));
-        String roomName = (String)params.get("roomName");
-
+    public List<ChatRoom> chat() {
         List<ChatRoom> newRoomList = chatService.readRoomList();
-
-        if(newRoomList != null && newRoomList.size() > 0) {
-            model.addAttribute("roomName", roomName);
-            model.addAttribute("roomNumber", roomNumber);
-        }
+        return newRoomList;
 
     }
 
 
     @PostMapping("/createRoom")
-    public @ResponseBody List<ChatRoom> createRoom(@RequestParam HashMap<Object,Object> params) {
+    public ChatRoom createRoom(@RequestParam HashMap<Object,Object> params) {
         String roomName = (String) params.get("roomName");
+        ChatRoom room = null;
         if(roomName != null && !roomName.trim().equals("")) {
-            ChatRoom room = chatService.createRoom(roomName);
+            room = chatService.createRoom(roomName);
         }
-        return roomList;
+        return room;
     }
 
 
