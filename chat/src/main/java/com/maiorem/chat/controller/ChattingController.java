@@ -28,12 +28,6 @@ public class ChattingController {
 
     }
 
-    @ApiOperation(value="채팅방 찾기", notes="채팅방 검색")
-    @GetMapping("/room")
-    public ChatRoom searchRoom(@PathVariable Long chatId) {
-        ChatRoom chatRoom = chatService.searchChatRoom(chatId);
-        return chatRoom;
-    }
 
     @ApiOperation(value="채팅방 create", notes="new chat room 만들기")
     @PostMapping("/chat")

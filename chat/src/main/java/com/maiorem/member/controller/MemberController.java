@@ -24,7 +24,7 @@ public class MemberController {
     public Result memberV2() {
         List<Member> findMembers = memberService.findMembers();
         List<MemberDTO> collect = findMembers.stream()
-                .map(m -> new MemberDTO(m.getName()))
+                .map(m -> new MemberDTO(m.getName(), m.getEmail()))
                 .collect(Collectors.toList());
         return new Result(collect.size(), collect);
     }
