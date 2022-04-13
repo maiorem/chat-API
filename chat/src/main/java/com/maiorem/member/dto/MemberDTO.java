@@ -7,4 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class MemberDTO {
     private String name;
+    private String email;
 }

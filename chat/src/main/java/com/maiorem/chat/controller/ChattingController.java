@@ -2,6 +2,7 @@ package com.maiorem.chat.controller;
 
 import com.maiorem.chat.domain.ChatRoom;
 import com.maiorem.chat.service.ChatService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
@@ -17,10 +18,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChattingController {
 
-
     private final ChatService chatService;
 
-
+    @ApiOperation(value="채팅방 리스트", notes="현재 존재하는 채팅방 리스트를 가져온다")
     @GetMapping("/chat")
     public List<ChatRoom> chat() {
         List<ChatRoom> newRoomList = chatService.readRoomList();
@@ -28,8 +28,15 @@ public class ChattingController {
 
     }
 
+    @ApiOperation(value="채팅방 찾기", notes="채팅방 검색")
+    @GetMapping("/room")
+    public ChatRoom searchRoom(@PathVariable Long chatId) {
+        ChatRoom chatRoom = chatService.searchChatRoom(chatId);
+        return chatRoom;
+    }
 
-    @PostMapping("/createRoom")
+    @ApiOperation(value="채팅방 create", notes="new chat room 만들기")
+    @PostMapping("/chat")
     public ChatRoom createRoom(@RequestParam HashMap<Object,Object> params) {
         String roomName = (String) params.get("roomName");
         ChatRoom room = null;
@@ -38,6 +45,8 @@ public class ChattingController {
         }
         return room;
     }
+
+
 
 
 }
